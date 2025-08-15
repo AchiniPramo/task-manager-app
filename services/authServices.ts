@@ -6,7 +6,7 @@ export const login = (email: string, password: string) => {
 }
 
 export const register = (email: string, password: string) => {
-    createUserWithEmailAndPassword(auth, email, password)
+   return createUserWithEmailAndPassword(auth, email, password)
 }
 
 export const logout = () => {
