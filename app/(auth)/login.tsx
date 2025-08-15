@@ -1,37 +1,32 @@
+import { login } from "@/services/authServices";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
-  View,
-  Text,
+  ActivityIndicator,
+  Alert,
   Pressable,
+  Text,
   TextInput,
   TouchableOpacity,
-  Alert,
-  ActivityIndicator,
+  View,
 } from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
-import { login } from "@/services/authService";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    //if(email)
-    //if(password)
-
     if (isLoading) return;
     setIsLoading(true);
     await login(email, password)
       .then((res) => {
-        // const res = await register(email, password)
-        // success
         router.push("/home");
+        Alert.alert("Login successful", "Welcome back!");
       })
-      .catch((err) => {
-        Alert.alert("Registration failed", "Something went wrong");
-        console.error(err);
+      .catch(() => {
+        Alert.alert("Login failed", "Invalid email or password.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -39,36 +34,43 @@ const Login = () => {
   };
 
   return (
-    <View className="flex-1 w-full justify-center items-center">
-      <Text className="text-4xl text-center">Login</Text>
+    <View className="flex-1 bg-gray-50 justify-center px-4">
+      <View className="bg-white rounded-xl shadow-md p-6 max-w-lg w-full mx-auto">
+        <Text className="text-2xl font-semibold text-center text-gray-900 mb-6">
+          Login
+        </Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        className="bg-surface border border-gray-300 rounded px-4 py-3 mb-4 text-gray-800"
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        className="bg-surface border border-gray-300 rounded px-4 py-3 mb-4 text-gray-800"
-      />
-      <TouchableOpacity
-        onPress={handleLogin}
-        className="bg-green-600 p-4 rounded mt-2"
-      >
-        {isLoading ? (
-          <ActivityIndicator color="#fff" size="large" />
-        ) : (
-          <Text className="text-center text-2xl text-white">Login</Text>
-        )}
-      </TouchableOpacity>
-
-      <Pressable className="px-6 py-3" onPress={() => router.back()}>
-        <Text className="text-4xl text-center">Don't have an account? Register</Text>
-      </Pressable>
+        <TextInput
+          placeholder="Email"
+          className="border border-gray-200 bg-gray-100 rounded-md p-3 mb-4 text-base"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <TextInput
+          placeholder="Password"
+          className="border border-gray-200 bg-gray-100 rounded-md p-3 mb-6 text-base"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TouchableOpacity
+          onPress={handleLogin}
+          className="bg-indigo-600 p-3 rounded-md"
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text className="text-white text-center font-medium">Login</Text>
+          )}
+        </TouchableOpacity>
+        <Pressable className="mt-4" onPress={() => router.push("/register")}>
+          <Text className="text-indigo-600 text-center font-medium">
+            Do not have an account? Register
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
